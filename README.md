@@ -31,20 +31,11 @@
 
 ## Запуск
 
-- Скачайте код
-- Установите зависимости командой `pip install -r requirements.txt`
-- Создайте БД командой `python3 manage.py migrate`
-- Запустите сервер командой `python3 manage.py runserver`
-
-## Переменные окружения
-
-Часть настроек проекта берётся из переменных окружения. Чтобы их определить, создайте файл `.env` рядом с `manage.py` и запишите туда данные в таком формате: `ПЕРЕМЕННАЯ=значение`.
-
-Доступны 3 переменные:
-- `DEBUG` — дебаг-режим. Поставьте True, чтобы увидеть отладочную информацию в случае ошибки.
-- `SECRET_KEY` — секретный ключ проекта
-- `ALLOWED_HOSTS` — см [документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
-- `DATABASE_NAME` — путь до базы данных, например: `schoolbase.sqlite3`
+- Откройте Django Shell: `python manage.py shell`
+- Импортируйте функции: `from scripts import fix_marks, remove_chastisements, create_commendation`
+- Исправить все плохие оценки на 5: `fix_marks("Фролов Иван")`
+- Удалить все замечания: `remove_chastisements("Фролов Иван")`
+- Добавить похвалу по предмету: `create_commendation("Фролов Иван", "Математика")`
 
 ## Цели проекта
 
