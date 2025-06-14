@@ -2,6 +2,15 @@ import random
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from datacenter.models import Schoolkid, Mark, Chastisement, Commendation, Lesson
 
+COMMENDATION_TEXTS = [
+    "Молодец!",
+    "Отлично справился!",
+    "Хорошая работа!",
+    "Так держать!",
+    "Превосходно!",
+    "Очень старался!"
+]
+
 
 def find_schoolkid(full_name):
     try:
@@ -13,14 +22,21 @@ def find_schoolkid(full_name):
     return None
 
 
-def fix_marks(schoolkid):
-    bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lt=4)
-    bad_marks.update(points=5)
-    print(f"Исправлено плохих оценок: {bad_marks.count()}")
+def fix_marks(full_name):
+    kid = find_schoolkid(full_name)
+    if not kid:
+        return
+
+    bad_marks = Mark.objects.filter(schoolkid=kid, points__lt=4).update(points=5)
+    print(f"Исправлено плохих оценок: {bad_marks}")
 
 
-def remove_chastisements(schoolkid):
-    removed_count, _ = Chastisement.objects.filter(schoolkid=schoolkid).delete()
+def remove_chastisements(full_name):
+    kid = find_schoolkid(full_name)
+    if not kid:
+        return
+
+    removed_count, _ = Chastisement.objects.filter(schoolkid=kid).delete()
     print(f"Удалено замечаний: {removed_count}")
 
 
@@ -39,17 +55,8 @@ def create_commendation(full_name, subject_name):
         print(f"Урок по предмету '{subject_name}' не найден.")
         return
 
-    commendation_texts = [
-        "Молодец!",
-        "Отлично справился!",
-        "Хорошая работа!",
-        "Так держать!",
-        "Превосходно!",
-        "Очень старался!",
-    ]
-
     Commendation.objects.create(
-        text=random.choice(commendation_texts),
+        text=random.choice(COMMENDATION_TEXTS),
         created=lesson.date,
         schoolkid=kid,
         subject=lesson.subject,
